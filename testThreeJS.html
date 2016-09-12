@@ -25,23 +25,47 @@
                         #info a, */.button { color: #f00; font-weight: bold; text-decoration: underline; cursor: pointer }
 
                         .block {
-                        text-align: left;
-                        line-height: 40px;
-                        position:absolute;
-                        top: 0%;
-                        left: 0%;
+								text-align: left;
+								line-height: 40px;
+								position:absolute;
+								top: 20%;
+								left: 0%;
                         }
 
                         /* The ghost, nudged to maintain perfect centering */
                         .block:before {
-                        content:'';
-                        display: inline-block;
-                        height: 100%;
-                        vertical-align: left;
-                        margin-right: -0.25em; /* Adjusts for spacing */
+								content:'';
+								display: inline-block;
+								height: 100%;
+								vertical-align: left;
+								margin-right: -0.25em; /* Adjusts for spacing */
                         }
 
                         div.anatomyBox span {
+                                color: #ffffff;
+                                font-size: 1em;
+                                vertical-align: middle;
+                                margin-left: 5px;
+                                cursor: hand;
+                        }
+						
+						.positionBlock {
+								text-align: left;
+								line-height: 40px;
+								position:absolute;
+								top: 20%;
+								right: 3%;
+                        }
+
+                        /* The ghost, nudged to maintain perfect centering */
+                        .positionBlock:before {
+								content:'';
+								display: inline-block;
+								height: 100%;
+								vertical-align: left;
+								margin-right: -0.25em; /* Adjusts for spacing */
+                        }
+						.cameraPositionBox span {
                                 color: #ffffff;
                                 font-size: 1em;
                                 vertical-align: middle;
@@ -122,24 +146,46 @@
                                <img src="icons/yellow.png" style="vertical-align: middle"> WTYmm
                         </span>
                 </div>
-                <div class="anatomyBox">
+			</div>	
+			
+			<div class="positionBlock">
+                <div class="cameraPositionBox">
                         <span onClick="moveCamera(225)">
-                                <input type="checkbox" id="wtymm_checkbox" checked>
+                                <input type="checkbox" id="roa_checkbox">
                                 ROA
                         </span>
                 </div>
-                <div class="anatomyBox">
-                        <span onClick="moveCamera(180)">
-                                <input type="checkbox" id="wtymm_checkbox" checked>
-                                RL
+				<div class="cameraPositionBox">
+                        <span onClick="moveCamera(315)">
+                                <input type="checkbox" id="loa_checkbox">
+                                LOA
                         </span>
                 </div>
-                <div class="anatomyBox">
+				<div class="cameraPositionBox">
                         <span onClick="moveCamera(90)">
-                                <input type="checkbox" id="wtymm_checkbox" checked>
+                                <input type="checkbox" id="pa_checkbox">
                                 PA
                         </span>
                 </div>
+				<div class="cameraPositionBox">
+                        <span onClick="moveCamera(270)">
+                                <input type="checkbox" id="ap_checkbox">
+                                AP
+                        </span>
+                </div>
+                <div class="cameraPositionBox">
+                        <span onClick="moveCamera(180)">
+                                <input type="checkbox" id="rl_checkbox">
+                                RL
+                        </span>
+                </div>
+				<div class="cameraPositionBox">
+                        <span onClick="moveCamera(0)">
+                                <input type="checkbox" id="ll_checkbox">
+                                LL
+                        </span>
+                </div>
+                
             </div>
 
             <div class="scene">
