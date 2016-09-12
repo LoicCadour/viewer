@@ -1,19 +1,20 @@
 <!DOCTYPE html>
 <html lang="en">
-        <head>
-                <title>three.js webgl - loaders - vtk loader</title>
-                <meta charset="utf-8">
-                <meta name="viewport" content="width=device-width, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0">
-                <style>
-                        body {
-                                font-family: sans-serif;
-                                background-color: #000;
-                                color: #fff;
-                                margin: 0px;
-                                overflow: hidden;
-                                display: inline;
-                        }
-                        /*#info {
+<head>
+    <title>three.js webgl - loaders - vtk loader</title>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0">
+    <style>
+        body
+        {
+            font-family: sans-serif;
+            background-color: #000;
+            color: #fff;
+            margin: 0px;
+            overflow: hidden;
+            display: inline;
+        }
+        /*#info {
                                 color: #fff;
                                 position: absolute;
                                 top: 10px;
@@ -22,183 +23,175 @@
                                 z-index: 100;
                                 display:block;
                         }
-                        #info a, */.button { color: #f00; font-weight: bold; text-decoration: underline; cursor: pointer }
-
-                        .block {
-								text-align: left;
-								line-height: 40px;
-								position:absolute;
-								top: 20%;
-								left: 0%;
-                        }
-
-                        /* The ghost, nudged to maintain perfect centering */
-                        .block:before {
-								content:'';
-								display: inline-block;
-								height: 100%;
-								vertical-align: left;
-								margin-right: -0.25em; /* Adjusts for spacing */
-                        }
-
-                        div.anatomyBox span {
-                                color: #ffffff;
-                                font-size: 1em;
-                                vertical-align: middle;
-                                margin-left: 5px;
-                                cursor: hand;
-                        }
-						
-						.positionBlock {
-								text-align: left;
-								line-height: 40px;
-								position:absolute;
-								top: 20%;
-								right: 3%;
-                        }
-
-                        /* The ghost, nudged to maintain perfect centering */
-                        .positionBlock:before {
-								content:'';
-								display: inline-block;
-								height: 100%;
-								vertical-align: left;
-								margin-right: -0.25em; /* Adjusts for spacing */
-                        }
-						.cameraPositionBox span {
-                                color: #ffffff;
-                                font-size: 1em;
-                                vertical-align: middle;
-                                margin-left: 5px;
-                                cursor: hand;
-                        }
-
-                        .scene {
-                        position:absolute;
-                        top: 0%;
-                        }
-                </style>
-        </head>
-        <body>
-                <!--
+                        #info a, */.button
+        {
+            color: #f00;
+            font-weight: bold;
+            text-decoration: underline;
+            cursor: pointer;
+        }
+        
+        .block
+        {
+            text-align: left;
+            line-height: 40px;
+            position: absolute;
+            top: 20%;
+            left: 0%;
+        }
+        
+        /* The ghost, nudged to maintain perfect centering */
+        .block:before
+        {
+            content: '';
+            display: inline-block;
+            height: 100%;
+            vertical-align: left;
+            margin-right: -0.25em; /* Adjusts for spacing */
+        }
+        
+        div.anatomyBox span
+        {
+            color: #ffffff;
+            font-size: 1em;
+            vertical-align: middle;
+            margin-left: 5px;
+            cursor: hand;
+        }
+        
+        .positionBlock
+        {
+            text-align: left;
+            line-height: 40px;
+            position: absolute;
+            top: 20%;
+            right: 3%;
+        }
+        
+        /* The ghost, nudged to maintain perfect centering */
+        .positionBlock:before
+        {
+            content: '';
+            display: inline-block;
+            height: 100%;
+            vertical-align: left;
+            margin-right: -0.25em; /* Adjusts for spacing */
+        }
+        .cameraPositionBox span
+        {
+            color: #ffffff;
+            font-size: 1em;
+            vertical-align: middle;
+            margin-left: 5px;
+            cursor: hand;
+        }
+        
+        .scene
+        {
+            position: absolute;
+            top: 0%;
+        }
+    </style>
+</head>
+<body>
+    <!--
                 <div id="info">
                 <a href="http://threejs.org" target="_blank">three.js</a> -
                 vtk formats loader test<br />
                 Legacy vtk model from <a href="http://www.cc.gatech.edu/projects/large_models/" target="_blank">The GeorgiaTech Lagre Geometric Model Archive</a>,
                 </div>
                 -->
-
-        <div id="whole_container">
-
-           <div class="block">
-                <div class="anatomyBox">
-                        <span onClick="toggleVisibility('left_endocardium');">
-                                <input type="checkbox" id="left_endocardium_checkbox" checked>
-                               <img src="icons/grey.png" style="vertical-align: middle"> Left Endocardium
-                        </span>
-                </div>
-
-                <div class="anatomyBox">
-                        <span onClick="toggleVisibility('epicardium');">
-                                <input type="checkbox" id="epicardium_checkbox" checked>
-                               <img src="icons/white.png" style="vertical-align: middle"> Epicardium
-                        </span>
-                </div>
-
-                <div class="anatomyBox">
-                        <span onClick="toggleVisibility('lca');">
-                                <input type="checkbox" id="lca_checkbox" checked>
-                               <img src="icons/red.png" style="vertical-align: middle"> LCA
-                        </span>
-                </div>
-
-                <div class="anatomyBox">
-                        <span onClick="toggleVisibility('rca');">
-                                <input type="checkbox" id="rca_checkbox" checked>
-                               <img src="icons/red.png" style="vertical-align: middle"> RCA
-                        </span>
-                </div>
-
-                <div class="anatomyBox">
-                        <span onClick="toggleVisibility('cs');">
-                                <input	type="checkbox" id="cs_checkbox" checked>
-                               <img src="icons/blue.png" style="vertical-align: middle"> Coronary Sinus
-                        </span>
-                </div>
-
-                <div class="anatomyBox">
-                        <span onClick="toggleVisibility('hypodensity');">
-                                <input type="checkbox" id="hypodensity_checkbox" checked>
-                               <img src="icons/purple.png" style="vertical-align: middle"> Hypodensity
-                        </span>
-                </div>
-
-                <div class="anatomyBox">
-                        <span onClick="toggleVisibility('wtxmm');">
-                                <input type="checkbox" id="wtxmm_checkbox" checked>
-                               <img src="icons/red.png" style="vertical-align: middle"> WTXmm
-                        </span>
-                </div>
-
-                <div class="anatomyBox">
-                        <span onClick="toggleVisibility('wtymm');">
-                                <input type="checkbox" id="wtymm_checkbox" checked>
-                               <img src="icons/yellow.png" style="vertical-align: middle"> WTYmm
-                        </span>
-                </div>
-			</div>	
-			
-			<div class="positionBlock">
-                <div class="cameraPositionBox">
-                        <span onClick="moveCamera(225)">
-                                <input type="checkbox" id="roa_checkbox">
-                                ROA
-                        </span>
-                </div>
-				<div class="cameraPositionBox">
-                        <span onClick="moveCamera(315)">
-                                <input type="checkbox" id="loa_checkbox">
-                                LOA
-                        </span>
-                </div>
-				<div class="cameraPositionBox">
-                        <span onClick="moveCamera(90)">
-                                <input type="checkbox" id="pa_checkbox">
-                                PA
-                        </span>
-                </div>
-				<div class="cameraPositionBox">
-                        <span onClick="moveCamera(270)">
-                                <input type="checkbox" id="ap_checkbox">
-                                AP
-                        </span>
-                </div>
-                <div class="cameraPositionBox">
-                        <span onClick="moveCamera(180)">
-                                <input type="checkbox" id="rl_checkbox">
-                                RL
-                        </span>
-                </div>
-				<div class="cameraPositionBox">
-                        <span onClick="moveCamera(0)">
-                                <input type="checkbox" id="ll_checkbox">
-                                LL
-                        </span>
-                </div>
-                
+    <div id="whole_container">
+        <div class="block">
+            <div class="anatomyBox">
+                <span onclick="toggleVisibility('left_endocardium');">
+                    <input type="checkbox" id="left_endocardium_checkbox" checked>
+                    <img src="icons/grey.png" style="vertical-align: middle">
+                    Left Endocardium </span>
             </div>
-
-            <div class="scene">
-                <script src='js/libs/inflate.min.js'></script>
-                <script src="js/three.js"></script>
-
-                <script src="js/controls/TrackballControls.js"></script>
-
-                <script src="js/loaders/VTKLoader.js"></script>
-
-                <script src="js/Detector.js"></script>
-                <script src="js/libs/stats.min.js"></script>
-                <script>
+            <div class="anatomyBox">
+                <span onclick="toggleVisibility('epicardium');">
+                    <input type="checkbox" id="epicardium_checkbox" checked>
+                    <img src="icons/white.png" style="vertical-align: middle">
+                    Epicardium </span>
+            </div>
+            <div class="anatomyBox">
+                <span onclick="toggleVisibility('lca');">
+                    <input type="checkbox" id="lca_checkbox" checked>
+                    <img src="icons/red.png" style="vertical-align: middle">
+                    LCA </span>
+            </div>
+            <div class="anatomyBox">
+                <span onclick="toggleVisibility('rca');">
+                    <input type="checkbox" id="rca_checkbox" checked>
+                    <img src="icons/red.png" style="vertical-align: middle">
+                    RCA </span>
+            </div>
+            <div class="anatomyBox">
+                <span onclick="toggleVisibility('cs');">
+                    <input type="checkbox" id="cs_checkbox" checked>
+                    <img src="icons/blue.png" style="vertical-align: middle">
+                    Coronary Sinus </span>
+            </div>
+            <div class="anatomyBox">
+                <span onclick="toggleVisibility('hypodensity');">
+                    <input type="checkbox" id="hypodensity_checkbox" checked>
+                    <img src="icons/purple.png" style="vertical-align: middle">
+                    Hypodensity </span>
+            </div>
+            <div class="anatomyBox">
+                <span onclick="toggleVisibility('wtxmm');">
+                    <input type="checkbox" id="wtxmm_checkbox" checked>
+                    <img src="icons/red.png" style="vertical-align: middle">
+                    WTXmm </span>
+            </div>
+            <div class="anatomyBox">
+                <span onclick="toggleVisibility('wtymm');">
+                    <input type="checkbox" id="wtymm_checkbox" checked>
+                    <img src="icons/yellow.png" style="vertical-align: middle">
+                    WTYmm </span>
+            </div>
+        </div>
+        <div class="positionBlock">
+            <div class="cameraPositionBox">
+                <span onclick="moveCamera(225)">
+                    <input type="checkbox" id="roa_checkbox">
+                    ROA </span>
+            </div>
+            <div class="cameraPositionBox">
+                <span onclick="moveCamera(315)">
+                    <input type="checkbox" id="loa_checkbox">
+                    LOA </span>
+            </div>
+            <div class="cameraPositionBox">
+                <span onclick="moveCamera(90)">
+                    <input type="checkbox" id="pa_checkbox">
+                    PA </span>
+            </div>
+            <div class="cameraPositionBox">
+                <span onclick="moveCamera(270)">
+                    <input type="checkbox" id="ap_checkbox">
+                    AP </span>
+            </div>
+            <div class="cameraPositionBox">
+                <span onclick="moveCamera(180)">
+                    <input type="checkbox" id="rl_checkbox">
+                    RL </span>
+            </div>
+            <div class="cameraPositionBox">
+                <span onclick="moveCamera(0)">
+                    <input type="checkbox" id="ll_checkbox">
+                    LL </span>
+            </div>
+        </div>
+        <div class="scene">
+            <script src='js/libs/inflate.min.js'></script>
+            <script src="js/three.js"></script>
+            <script src="js/controls/TrackballControls.js"></script>
+            <script src="js/loaders/VTKLoader.js"></script>
+            <script src="js/Detector.js"></script>
+            <script src="js/libs/stats.min.js"></script>
+            <script>
 
                         if ( ! Detector.webgl ) Detector.addGetWebGLMessage();
 
@@ -383,42 +376,40 @@
                                 stats.update();
                         }
 
-                </script>
+            </script>
+            <script>
+                function toggleVisibility(objectname) {
 
-                <script>
-                        function toggleVisibility(objectname) {
+                    // retrieve scene
+                    scene = eval('scene');
+                    object = scene.getObjectByName(objectname);
 
-                                // retrieve scene
-                                scene = eval('scene');
-                                object = scene.getObjectByName(objectname);
+                    // toggle visibility
+                    object.visible = !object.visible;
 
-                                // toggle visibility
-                                object.visible = !object.visible;
+                    // update checkbox
+                    document.getElementById(objectname + '_checkbox').checked = object.visible;
+                }
+            </script>
+            <script>
+                function moveCamera(angle) {
 
-                                // update checkbox
-                                document.getElementById(objectname + '_checkbox').checked = object.visible;
-                        }
-                </script>
+                    var dx = Math.pow(camera.position.x - cameraFocal.x, 2);
+                    var dy = Math.pow(camera.position.y - cameraFocal.y, 2);
+                    var dz = Math.pow(camera.position.z - cameraFocal.z, 2);
 
-                <script>
-                        function moveCamera(angle) {
+                    var distCamObj = Math.sqrt(dx + dy + dz);
 
-                                var dx = Math.pow(camera.position.x - cameraFocal.x, 2);
-                                var dy = Math.pow(camera.position.y - cameraFocal.y, 2);
-                                var dz = Math.pow(camera.position.z - cameraFocal.z, 2);
+                    camera.position.x = cameraFocal.x + distCamObj * Math.cos(angle * Math.PI / 180);
+                    camera.position.y = cameraFocal.y + distCamObj * Math.sin(angle * Math.PI / 180);
+                    camera.position.z = cameraFocal.z;
 
-                                var distCamObj = Math.sqrt(dx + dy + dz);
-
-                                camera.position.x = cameraFocal.x + distCamObj*Math.cos(angle*Math.PI/180);
-                                camera.position.y = cameraFocal.y + distCamObj*Math.sin(angle*Math.PI/180);
-                                camera.position.z = cameraFocal.z;
-
-                                camera.up.x = 0;
-                                camera.up.y = 0;
-                                camera.up.z = 1;
-                        }
-                </script>
-                </div>
-                </div>
-        </body>
+                    camera.up.x = 0;
+                    camera.up.y = 0;
+                    camera.up.z = 1;
+                }
+            </script>
+        </div>
+    </div>
+</body>
 </html>
