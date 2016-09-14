@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+?<!DOCTYPE html>
 <html lang="en">
 <head>
     <title>three.js webgl - loaders - vtk loader</title>
@@ -31,7 +31,7 @@
             text-decoration: underline;
             cursor: pointer;
         }
-        
+
         .block
         {
             text-align: left;
@@ -40,7 +40,7 @@
             top: 20%;
             left: 0%;
         }
-        
+
         /* The ghost, nudged to maintain perfect centering */
         .block:before
         {
@@ -50,7 +50,7 @@
             vertical-align: left;
             margin-right: -0.25em; /* Adjusts for spacing */
         }
-        
+
         div.anatomyBox span
         {
             color: #ffffff;
@@ -59,7 +59,7 @@
             margin-left: 5px;
             cursor: hand;
         }
-        
+
         .positionBlock
         {
             text-align: left;
@@ -68,7 +68,7 @@
             top: 20%;
             right: 3%;
         }
-        
+
         /* The ghost, nudged to maintain perfect centering */
         .positionBlock:before
         {
@@ -86,7 +86,7 @@
             margin-left: 5px;
             cursor: hand;
         }
-        
+
         .scene
         {
             position: absolute;
@@ -153,38 +153,18 @@
                     WTYmm </span>
             </div>
         </div>
+
         <div class="positionBlock">
-            <div class="cameraPositionBox">
-                <span onclick="moveCamera(225)">
-                    <input type="checkbox" id="roa_checkbox">
-                    ROA </span>
-            </div>
-            <div class="cameraPositionBox">
-                <span onclick="moveCamera(315)">
-                    <input type="checkbox" id="loa_checkbox">
-                    LOA </span>
-            </div>
-            <div class="cameraPositionBox">
-                <span onclick="moveCamera(90)">
-                    <input type="checkbox" id="pa_checkbox">
-                    PA </span>
-            </div>
-            <div class="cameraPositionBox">
-                <span onclick="moveCamera(270)">
-                    <input type="checkbox" id="ap_checkbox">
-                    AP </span>
-            </div>
-            <div class="cameraPositionBox">
-                <span onclick="moveCamera(180)">
-                    <input type="checkbox" id="rl_checkbox">
-                    RL </span>
-            </div>
-            <div class="cameraPositionBox">
-                <span onclick="moveCamera(0)">
-                    <input type="checkbox" id="ll_checkbox">
-                    LL </span>
-            </div>
+            <form action="" class="cameraPositionBox">
+                    <input type="radio" name="position" id="roa_checkbox" onclick="moveCamera(225)">ROA <br>
+                    <input type="radio" name="position" id="loa_checkbox" onclick="moveCamera(315)">LOA <br>
+                    <input type="radio" name="position" id="pa_checkbox" onclick="moveCamera(90)">PA <br>
+                    <input type="radio" name="position" id="ap_checkbox" onclick="moveCamera(270)">AP <br>
+                    <input type="radio" name="position" id="rl_checkbox" onclick="moveCamera(180)">RL <br>
+                    <input type="radio" name="position" id="ll_checkbox" onclick="moveCamera(0)">LL <br>
+            </form>
         </div>
+
         <div class="scene">
             <script src='js/libs/inflate.min.js'></script>
             <script src="js/three.js"></script>
