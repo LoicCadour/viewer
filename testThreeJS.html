@@ -80,7 +80,7 @@
         }
         .cameraPositionBox span
         {
-            color: #ffffff;
+            color: #ffffff; /*text color*/
             font-size: 1em;
             vertical-align: middle;
             margin-left: 5px;
@@ -92,6 +92,38 @@
             position: absolute;
             top: 0%;
         }
+
+        .checkbox {
+  margin: 0 0 1em 2em;
+}
+.checkbox .tag {
+  color: #595959;
+  display: block;
+  float: left;
+  font-weight: bold;
+  position: relative;
+  width: 120px;
+}
+.checkbox label {
+  display: inline;
+}
+.checkbox .input-assumpte {
+  display: none;
+}
+.input-assumpte + label:after {
+  background-color: #fafafa;
+  border: 1px solid #cacece;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05), inset 0px -15px 10px -12px rgba(0, 0, 0, 0.05);
+  display: inline-block;
+  transition-duration: 0.3s;
+  width: 16px;
+  height: 16px;
+  content: '';
+  margin-left: 10px;
+}
+.input-assumpte:checked + label:after {
+  background-color: #ff0000;
+}
     </style>
 </head>
 <body>
@@ -103,55 +135,11 @@
                 </div>
                 -->
     <div id="whole_container">
-        <div class="block">
-            <div class="anatomyBox">
-                <span onclick="toggleVisibility('left_endocardium');">
-                    <input type="checkbox" id="left_endocardium_checkbox" checked>
-                    <img src="icons/grey.png" style="vertical-align: middle">
-                    Left Endocardium </span>
-            </div>
-            <div class="anatomyBox">
-                <span onclick="toggleVisibility('epicardium');">
-                    <input type="checkbox" id="epicardium_checkbox" checked>
-                    <img src="icons/white.png" style="vertical-align: middle">
-                    Epicardium </span>
-            </div>
-            <div class="anatomyBox">
-                <span onclick="toggleVisibility('lca');">
-                    <input type="checkbox" id="lca_checkbox" checked>
-                    <img src="icons/red.png" style="vertical-align: middle">
-                    LCA </span>
-            </div>
-            <div class="anatomyBox">
-                <span onclick="toggleVisibility('rca');">
-                    <input type="checkbox" id="rca_checkbox" checked>
-                    <img src="icons/red.png" style="vertical-align: middle">
-                    RCA </span>
-            </div>
-            <div class="anatomyBox">
-                <span onclick="toggleVisibility('cs');">
-                    <input type="checkbox" id="cs_checkbox" checked>
-                    <img src="icons/blue.png" style="vertical-align: middle">
-                    Coronary Sinus </span>
-            </div>
-            <div class="anatomyBox">
-                <span onclick="toggleVisibility('hypodensity');">
-                    <input type="checkbox" id="hypodensity_checkbox" checked>
-                    <img src="icons/purple.png" style="vertical-align: middle">
-                    Hypodensity </span>
-            </div>
-            <div class="anatomyBox">
-                <span onclick="toggleVisibility('wtxmm');">
-                    <input type="checkbox" id="wtxmm_checkbox" checked>
-                    <img src="icons/red.png" style="vertical-align: middle">
-                    WTXmm </span>
-            </div>
-            <div class="anatomyBox">
-                <span onclick="toggleVisibility('wtymm');">
-                    <input type="checkbox" id="wtymm_checkbox" checked>
-                    <img src="icons/yellow.png" style="vertical-align: middle">
-                    WTYmm </span>
-            </div>
+        <div class="block" id="block">
+          <div class="checkbox">
+  <input type="checkbox" class="input-assumpte" id="input-confidencial" />
+  <label for="input-confidencial">Confidencial</label>
+</div>
         </div>
 
         <div class="positionBlock">
@@ -286,6 +274,7 @@
                                         var cs = new THREE.Mesh( geometry, material );
                                         cs.name = 'cs';
                                         scene.add( cs );
+                                        createGUI('cs');
 
                                         var event = new Event('centerCalculated');
                                         window.dispatchEvent(event);
@@ -344,9 +333,35 @@
                                         mesh.name = aName;
 
                                         scene.add( mesh );
+                                        createGUI(aName);
+
                                 } );
                         }
+                        function createGUI(aName)
+                        {
+                                //Create an input type dynamically.
+                                var checkbox = document.createElement("input");
+                                //Assign different attributes to the element.
+                                checkbox.type = "checkbox";
+                                checkbox.id = aName + '_checkbox';
+                                checkbox.name = aName;
+                                checkbox.className = "input-assumpte";
+                                checkbox.checked = true;
+                                checkbox.setAttribute("onclick", "toggleVisibility('"+ aName+"');");
 
+                                var label = document.createElement('label')
+                                label.htmlFor = checkbox.id;
+                                label.appendChild(document.createTextNode(' ' + aName));
+
+                                var division = document.createElement("div");
+                                division.class = "anatomyBox";
+                                division.appendChild(checkbox);
+                                division.appendChild(label);
+
+                                var foo = document.getElementById("block");
+                                //Append the element in page (in span).
+                                foo.appendChild(division);
+                        }
                         function animate() {
 
                                 requestAnimationFrame( animate );
@@ -356,7 +371,6 @@
 
                                 stats.update();
                         }
-
             </script>
             <script>
                 function toggleVisibility(objectname) {
