@@ -263,8 +263,8 @@
                                 camera.add( dirLight.target );
 
 
-                                /*var loader = new THREE.VTKLoader();
-                                loader.load( "meshes/14. coronarySinusMesh.vtk", function ( geometry ) {
+                                var loader = new THREE.VTKLoader();
+                                loader.load( "meshes/12. leftVentricularEndoMesh.vtk", function ( geometry ) {
 
                                         geometry.computeBoundingBox();
                                         center.x        = ( geometry.boundingBox.max.x + geometry.boundingBox.min.x ) / 2;
@@ -272,15 +272,42 @@
                                         center.z        = ( geometry.boundingBox.max.z + geometry.boundingBox.min.z ) / 2;
                                         geometry.translate(-center.x, -center.y, -center.z);
 
-                                        var material = new THREE.MeshLambertMaterial( { color: 0x0000ff, side: THREE.DoubleSide } );
-                                        var cs = new THREE.Mesh( geometry, material );
-                                        cs.name = 'cs';
-                                        scene.add( cs );
-                                        createGUI('cs');
+                                        var colorMap = "inverted_rainbow";
+                                        var colorNumber = 512;
+                                        var material = new THREE.MeshLambertMaterial( {
+                                          side: THREE.DoubleSide,
+                                          color: 0xF5F5F5,
+                                          vertexColors: THREE.VertexColors
+                                        } );
 
+                                        var lutColors = [];
+                                        lut = new THREE.Lut( colorMap, colorNumber );
+                                        lut.setMax(6);
+                                        lut.setMin(2);
+
+                                        for (var i = 0; i < geometry.userData.pointData.length; i++) {
+                                          var colorValue = geometry.userData.pointData[i];
+                                          color = lut.getColor(colorValue);
+                                          if ( color == undefined ) {
+                                            console.log( "ERROR: " + colorValue );
+                                          }
+                                          else {
+                                            lutColors[ 3 * i     ] = color.r;
+                                            lutColors[ 3 * i + 1 ] = color.g;
+                                            lutColors[ 3 * i + 2 ] = color.b;
+                                          }
+                                        }
+                                        geometry.addAttribute( 'color', new THREE.BufferAttribute( new Float32Array( lutColors ), 3 ) );
+
+                                        var lvEndo = new THREE.Mesh( geometry, material );
+                                        lvEndo.name = 'leftVentricularEndo';
+                                        scene.add( lvEndo );
+                                        createGUI(lvEndo.name);
+                                        var visibilityON = false;
+                                        toggleVisibility(lvEndo.name, visibilityON);
                                         var event = new Event('centerCalculated');
                                         window.dispatchEvent(event);
-                                } );*/
+                                } );
 
                                 // renderer
 
@@ -313,6 +340,7 @@
 
                                 loadVTKMesh('meshes/11. leftEndoMesh.vtk', 'left_endocardium', 0x808080, false, 1.0, false);
                                 loadVTKMesh('meshes/13. leftAndRightEpiMesh.vtk', 'epicardium', 0xffffff, true, 0.1, true);
+                                loadVTKMesh('meshes/14. coronarySinusMesh.vtk', 'cs', 0x0000ff, false, 1.0, false);
                                 loadVTKMesh('meshes/15. leftCoronaryArteryMesh.vtk', 'lca', 0xff0000, false, 1.0, false);
                                 loadVTKMesh('meshes/16. rightCoronaryArteryMesh.vtk', 'rca', 0xff0000, false, 1.0, false);
                                 loadVTKMesh('meshes/20. hypodensityMesh.vtk', 'hypodensity', 0x800080, false, 1.0, false); //purple
@@ -335,55 +363,13 @@
                                         mesh.name = aName;
 
                                         scene.add( mesh );
-                                        createGUI(aName);
+                                        var visibilityON = true;
+                                        createGUI(aName, visibilityON);
 
                                 } );
                         }
 
-                        function bloup()
-                        {
-                          var loader = new THREE.VTKLoader();
-                          loader.load( "meshes/12. leftVentricularEndoMesh.vtk", function ( geometry ) {
-
-                                  geometry.translate(-center.x, -center.y, -center.z);
-console.log(geometry.userData);
-                                  var colorMap = "inverted_rainbow";
-                                  var colorNumber = 512;
-                                  var material = new THREE.MeshLambertMaterial( {
-						                              side: THREE.DoubleSide,
-			                                    color: 0xF5F5F5,
-                                          vertexColors: THREE.VertexColors
-					                        } );
-
-                                  var lutColors = [];
-                                  lut = new THREE.Lut( colorMap, colorNumber );
-                                  lut.setMax(6);
-                                  lut.setMin(2);
-                                  console.log(geometry.userData.pointData.length);
-                                  for (var i = 0; i < geometry.userData.pointData.length; i++) {
-                                    var colorValue = geometry.userData.pointData[i];
-                                    color = lut.getColor(colorValue);
-                                    if ( color == undefined ) {
-                                      console.log( "ERROR: " + colorValue );
-                                    }
-                                    else {
-                                      lutColors[ 3 * i     ] = color.r;
-                                      lutColors[ 3 * i + 1 ] = color.g;
-                                      lutColors[ 3 * i + 2 ] = color.b;
-                                    }
-                                  }
-                                  geometry.addAttribute( 'color', new THREE.BufferAttribute( new Float32Array( lutColors ), 3 ) );
-
-                                  var mesh = new THREE.Mesh( geometry, material );
-                                  mesh.name = 'leftVentricularEndo';
-
-                                  scene.add( mesh );
-                                  createGUI('leftVentricularEndo');
-
-                          } );
-
-                        }
-                        function createGUI(aName)
+                        function createGUI(aName, visibilityON)
                         {
                                 //Create an input type dynamically.
                                 var checkbox = document.createElement("input");
@@ -392,7 +378,7 @@ console.log(geometry.userData);
                                 checkbox.id = aName + '_checkbox';
                                 checkbox.name = aName;
                                 checkbox.className = "anatomyBox";
-                                checkbox.checked = true;
+                                checkbox.checked = visibilityON;
                                 checkbox.setAttribute("onclick", "toggleVisibility('"+ aName+"');");
 
                                 var label = document.createElement('label')
