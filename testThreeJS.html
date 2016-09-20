@@ -136,6 +136,12 @@
                 -->
     <div id="whole_container">
         <div class="block" id="block">
+          <div class="anatomyBox">
+                <span onclick="bloup();">
+                    <input type="checkbox" id="epicardium_checkbox" checked>
+                    <img src="icons/white.png" style="vertical-align: middle">
+                    Load mapped mesh </span>
+            </div>
         </div>
 
         <div class="positionBlock">
@@ -155,6 +161,7 @@
             <script src="js/controls/TrackballControls.js"></script>
             <script src="js/loaders/VTKLoader.js"></script>
             <script src="js/Detector.js"></script>
+            <script src="js/Lut.js"></script>
             <script src="js/libs/stats.min.js"></script>
             <script>
 
@@ -256,10 +263,9 @@
                                 camera.add( dirLight.target );
 
 
-                                var loader = new THREE.VTKLoader();
+                                /*var loader = new THREE.VTKLoader();
                                 loader.load( "meshes/14. coronarySinusMesh.vtk", function ( geometry ) {
 
-                                        geometry.computeVertexNormals();
                                         geometry.computeBoundingBox();
                                         center.x        = ( geometry.boundingBox.max.x + geometry.boundingBox.min.x ) / 2;
                                         center.y        = ( geometry.boundingBox.max.y + geometry.boundingBox.min.y ) / 2;
@@ -274,7 +280,7 @@
 
                                         var event = new Event('centerCalculated');
                                         window.dispatchEvent(event);
-                                } );
+                                } );*/
 
                                 // renderer
 
@@ -332,6 +338,50 @@
                                         createGUI(aName);
 
                                 } );
+                        }
+
+                        function bloup()
+                        {
+                          var loader = new THREE.VTKLoader();
+                          loader.load( "meshes/12. leftVentricularEndoMesh.vtk", function ( geometry ) {
+
+                                  geometry.translate(-center.x, -center.y, -center.z);
+console.log(geometry.userData);
+                                  var colorMap = "inverted_rainbow";
+                                  var colorNumber = 512;
+                                  var material = new THREE.MeshLambertMaterial( {
+						                              side: THREE.DoubleSide,
+			                                    color: 0xF5F5F5,
+                                          vertexColors: THREE.VertexColors
+					                        } );
+
+                                  var lutColors = [];
+                                  lut = new THREE.Lut( colorMap, colorNumber );
+                                  lut.setMax(6);
+                                  lut.setMin(2);
+                                  console.log(geometry.userData.pointData.length);
+                                  for (var i = 0; i < geometry.userData.pointData.length; i++) {
+                                    var colorValue = geometry.userData.pointData[i];
+                                    color = lut.getColor(colorValue);
+                                    if ( color == undefined ) {
+                                      console.log( "ERROR: " + colorValue );
+                                    }
+                                    else {
+                                      lutColors[ 3 * i     ] = color.r;
+                                      lutColors[ 3 * i + 1 ] = color.g;
+                                      lutColors[ 3 * i + 2 ] = color.b;
+                                    }
+                                  }
+                                  geometry.addAttribute( 'color', new THREE.BufferAttribute( new Float32Array( lutColors ), 3 ) );
+
+                                  var mesh = new THREE.Mesh( geometry, material );
+                                  mesh.name = 'leftVentricularEndo';
+
+                                  scene.add( mesh );
+                                  createGUI('leftVentricularEndo');
+
+                          } );
+
                         }
                         function createGUI(aName)
                         {
